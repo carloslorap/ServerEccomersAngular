@@ -18,12 +18,12 @@ const registro_cliente = async function (req, res) {
         if (hash) {
           data.password = hash;
           var reg = await Cliente.create(data);
-          res.status(200).send({ data: reg });
+          res.status(200).send({ data: reg ,token: jwt.createToken(reg)});
         } else {
           res.status(200).send({ message: "Error Server", data: undefined });
         }
       });
-    } else {
+    } else { 
       res
         .status(200)
         .send({ message: "No hay una contraseña", data: undefined });
