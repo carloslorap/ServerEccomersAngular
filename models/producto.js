@@ -16,7 +16,7 @@ var ProductoSchema = Schema({
   titulo_variedad: { type: String, required: false },
   categoria: { type: String, required: true },
   estado: { type: String,default:'Edicion', required: false },
-  isInWishlist: { type: Boolean, default: false },
+
   createdAt: { type: Date, default: Date.now, required: false },
 });
 

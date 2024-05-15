@@ -12,15 +12,14 @@ const agregar_carrito_cliente = async function (req, res) {
       if (carrito_cliente.length == 0) {
         let reg = await Carrito.create(data);
 
-        // Obtener el producto para verificar isInWishlist
+        // Obtener el producto para verificar el id
         let producto = await Producto.findById(data.producto);
 
-        if (producto && producto.isInWishlist) {
+        if (producto && producto._id) {
           // Eliminar el producto de la lista de deseos
           await Wishlist.deleteOne({ cliente: data.cliente, producto: data.producto });
 
-          // Cambiar el estado isInWishlist a false
-          await Producto.findByIdAndUpdate(data.producto, { isInWishlist: false });
+         
         }
 
         res.status(200).send({ data: reg });

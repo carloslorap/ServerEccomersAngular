@@ -1,6 +1,7 @@
 const Wishlist = require("../models/wishlist");
 const Carrito = require("../models/carrito.js");
 var Producto = require("../models/producto.js");
+var Cliente = require("../models/cliente.js");
 
 const agregar_wishlist_cliente = async function (req, res) {
   if (req.user) {
@@ -10,14 +11,11 @@ const agregar_wishlist_cliente = async function (req, res) {
       let wishlist_cliente = await Wishlist.findOne({
         cliente: data.cliente,
         producto: data.producto,
-      });
+      }); 
 
       if (!wishlist_cliente) {
         // El producto no está en la lista de deseos del cliente, se agrega
         let reg = await Wishlist.create(data);
-
-        // Cambiar el estado isInWishlist a true
-        await Producto.findByIdAndUpdate(data.producto, { isInWishlist: true });
 
         // Eliminar el producto del carrito del cliente si existe
         await Carrito.findOneAndDelete({
@@ -38,6 +36,7 @@ const agregar_wishlist_cliente = async function (req, res) {
     res.status(500).send({ message: "NoAccess" });
   }
 };
+
 
 const obtener_wishlist_cliente = async function (req, res) {
   if (req.user) {
@@ -63,11 +62,6 @@ const eliminar_wishlist_cliente = async function (req, res) {
     });
 
     if (wishlist_cliente) {
-      // Cambia el estado isInWishlist a false en el producto relacionado
-      await Producto.updateOne(
-        { _id: wishlist_cliente.producto },
-        { isInWishlist: false }
-      );
 
       res.status(200).send({ data: wishlist_cliente });
     } else {

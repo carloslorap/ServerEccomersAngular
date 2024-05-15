@@ -11,11 +11,14 @@ const carrito_route = require("./routes/carrito.js");
 const venta_route = require("./routes/venta.js");
 const descuento_route = require("./routes/descuento.js");
 const wishlist_route = require("./routes/wishlist.js");
+const cors= require('cors') ;
 
 dotenv.config();
+
 const app = express();
 app.use(express.json());
-
+app.use(cors());
+ 
 connectDB();
 
 var server = require("http").createServer(app);

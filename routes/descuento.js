@@ -17,3 +17,4 @@ api.delete('/eliminar_descuento_admin/:id',auth.auth,DescuentoController.elimina
 api.get('/obtener_descuento_activo',DescuentoController.obtener_descuento_activo) 
 module.exports = api
 
+  
