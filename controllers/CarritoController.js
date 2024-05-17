@@ -3,11 +3,14 @@ const Wishlist = require("../models/wishlist");
 var Producto = require("../models/producto.js");
 
 const agregar_carrito_cliente = async function (req, res) {
-  //if (req.user) {
+  if (req.user) {
     let data = req.body;
 
     try {
-      let carrito_cliente = await Carrito.find({ cliente: data.cliente, producto: data.producto });
+      let carrito_cliente = await Carrito.find({
+        cliente: data.cliente,
+        producto: data.producto,
+      });
 
       if (carrito_cliente.length == 0) {
         let reg = await Carrito.create(data);
@@ -17,9 +20,10 @@ const agregar_carrito_cliente = async function (req, res) {
 
         if (producto && producto._id) {
           // Eliminar el producto de la lista de deseos
-          await Wishlist.deleteOne({ cliente: data.cliente, producto: data.producto });
-
-         
+          await Wishlist.deleteOne({
+            cliente: data.cliente,
+            producto: data.producto,
+          });
         }
 
         res.status(200).send({ data: reg });
@@ -27,15 +31,13 @@ const agregar_carrito_cliente = async function (req, res) {
         res.status(200).send({ data: undefined });
       }
     } catch (error) {
-      console.error('Error al agregar producto al carrito:', error);
-      res.status(500).send({ message: 'Error interno del servidor' });
+      console.error("Error al agregar producto al carrito:", error);
+      res.status(500).send({ message: "Error interno del servidor" });
     }
-  // }
-  //  else {
-  //   res.status(500).send({ message: 'NoAccess' });
-  // }
+  } else {
+    res.status(500).send({ message: "NoAccess" });
+  }
 };
-
 
 const obtener_carrito_cliente = async function (req, res) {
   if (req.user) {
