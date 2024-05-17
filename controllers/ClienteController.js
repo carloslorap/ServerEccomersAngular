@@ -18,12 +18,12 @@ const registro_cliente = async function (req, res) {
         if (hash) {
           data.password = hash;
           var reg = await Cliente.create(data);
-          res.status(200).send({ data: reg ,token: jwt.createToken(reg)});
+          res.status(200).send({ data: reg, token: jwt.createToken(reg) });
         } else {
           res.status(200).send({ message: "Error Server", data: undefined });
         }
       });
-    } else { 
+    } else {
       res
         .status(200)
         .send({ message: "No hay una contraseña", data: undefined });
@@ -91,21 +91,22 @@ const registro_cliente_admin = async function (req, res) {
           var reg = await Cliente.create(data);
           res.status(200).send({ data: reg });
         } else {
-          res.status(200).send({ message: "Hubo un error en el servidor", data: undefined });
+          res
+            .status(200)
+            .send({ message: "Hubo un error en el servidor", data: undefined });
         }
       });
-    } 
+    }
   }
 };
 
 const obtener_cliente_admin = async function (req, res) {
   if (req.user) {
     if (req.user.rol == "admin") {
-     
-      var id = req.params['id'];
- 
+      var id = req.params["id"];
+
       try {
-        var reg = await Cliente.findById({_id:id})
+        var reg = await Cliente.findById({ _id: id });
         res.status(200).send({ data: reg });
       } catch (error) {
         res.status(200).send({ data: undefined });
@@ -113,7 +114,7 @@ const obtener_cliente_admin = async function (req, res) {
     } else {
       res.status(500).send({ message: "NoAccess" });
     }
-  }else {
+  } else {
     res.status(500).send({ message: "NoAccess" });
   }
 };
@@ -121,24 +122,26 @@ const obtener_cliente_admin = async function (req, res) {
 const actualizar_cliente_admin = async function (req, res) {
   if (req.user) {
     if (req.user.rol == "admin") {
-     
-      var id = req.params['id'];
-      var data = req.body
-      
-      var reg = await Cliente.findByIdAndUpdate({_id:id},{
-        nombres:data.nombres,
-        apellidos:data.apellidos,
-        email:data.email,
-        telefono:data.telefono,
-        f_nacimiento:data.f_nacimiento,
-        dni:data.dni,
-        genero:data.genero
-      })
+      var id = req.params["id"];
+      var data = req.body;
+
+      var reg = await Cliente.findByIdAndUpdate(
+        { _id: id },
+        {
+          nombres: data.nombres,
+          apellidos: data.apellidos,
+          email: data.email,
+          telefono: data.telefono,
+          f_nacimiento: data.f_nacimiento,
+          dni: data.dni,
+          genero: data.genero,
+        }
+      );
       res.status(200).send({ data: reg });
     } else {
       res.status(500).send({ message: "NoAccess" });
     }
-  }else {
+  } else {
     res.status(500).send({ message: "NoAccess" });
   }
 };
@@ -146,93 +149,87 @@ const actualizar_cliente_admin = async function (req, res) {
 const eliminar_cliente_admin = async function (req, res) {
   if (req.user) {
     if (req.user.rol == "admin") {
-     
-      var id = req.params['id'];
+      var id = req.params["id"];
 
-      var reg = await Cliente.deleteOne({_id: id});
+      var reg = await Cliente.deleteOne({ _id: id });
       res.status(200).send({ data: reg });
-      
     } else {
       res.status(500).send({ message: "NoAccess" });
     }
-  }else {
+  } else {
     res.status(500).send({ message: "NoAccess" });
   }
 };
 
 const obtener_cliente_guest = async function (req, res) {
   if (req.user) {
+    var id = req.params["id"];
 
-     
-      var id = req.params['id'];
- 
-      try {
-        var reg = await Cliente.findById({_id:id})
-        res.status(200).send({ data: reg });
-      } catch (error) {
-        res.status(200).send({ data: undefined });
-      }
-
-  }else {
+    try {
+      var reg = await Cliente.findById({ _id: id });
+      res.status(200).send({ data: reg });
+    } catch (error) {
+      res.status(200).send({ data: undefined });
+    }
+  } else {
     res.status(500).send({ message: "NoAccess" });
   }
 };
 
 const actualizar_perfil_cliente_guest = async function (req, res) {
   if (req.user) {
+    var id = req.params["id"];
+    var data = req.body;
 
-      var id = req.params['id'];
-      var data = req.body
+    if (data.password) {
+      bcrypt.hash(data.password, null, null, async function (err, hash) {
+        var reg = await Cliente.findByIdAndUpdate(
+          { _id: id },
+          {
+            nombres: data.nombres,
+            apellidos: data.apellidos,
 
-      if (data.password) {
-          bcrypt.hash(data.password,null,null,async function(err,hash){
-            var reg = await Cliente.findByIdAndUpdate({_id:id},{
-              nombres :data.nombres,
-              apellidos :data.apellidos,
-      
-              telefono :data.telefono,
-              f_nacimiento : data.f_nacimiento,
-              dni:data.dni,
-              genero:data.genero,
-              pais:data.pais,
-              password:hash
-            })
+            telefono: data.telefono,
+            f_nacimiento: data.f_nacimiento,
+            dni: data.dni,
+            genero: data.genero,
+            pais: data.pais,
+            password: hash,
+          }
+        );
 
-            res.status(200).send({data:reg})
-          })
+        res.status(200).send({ data: reg });
+      });
+    } else {
+      var reg = await Cliente.findByIdAndUpdate(
+        { _id: id },
+        {
+          nombres: data.nombres,
+          apellidos: data.apellidos,
 
-         
-      }else{
-        var reg = await Cliente.findByIdAndUpdate({_id:id},{
-          nombres :data.nombres,
-          apellidos :data.apellidos,
-  
-          telefono :data.telefono,
-          f_nacimiento : data.f_nacimiento,
-          dni:data.dni,
-          genero:data.genero,
-          pais:data.pais
-        })
-        res.status(200).send({data:reg})
-      }
-
-  }else {
+          telefono: data.telefono,
+          f_nacimiento: data.f_nacimiento,
+          dni: data.dni,
+          genero: data.genero,
+          pais: data.pais,
+        }
+      );
+      res.status(200).send({ data: reg });
+    }
+  } else {
     res.status(500).send({ message: "NoAccess" });
   }
 };
 
 const obtener_ordenes_cliente = async function (req, res) {
   if (req.user) {
-
-      let id = req.params["id"]
-      let reg = await Venta.find({cliente:id}).sort({createdAt:-1})
-      if (reg.length >= 1) {
-        res.status(200).send({ data: reg });
-      }else if(reg.length == 0){
-        res.status(200).send({ data: undefined  });
-      }
- 
-    
+    let id = req.params["id"];
+    let reg = await Venta.find({ cliente: id }).sort({ createdAt: -1 });
+    if (reg.length >= 1) {
+      res.status(200).send({ data: reg });
+    } else if (reg.length == 0) {
+      res.status(200).send({ data: undefined });
+    }
   } else {
     res.status(500).send({ message: "NoAccess" });
   }
@@ -240,40 +237,40 @@ const obtener_ordenes_cliente = async function (req, res) {
 
 const obtener_detalles_ordenes_cliente = async function (req, res) {
   if (req.user) {
+    let id = req.params["id"];
 
-      let id = req.params["id"]
-
-      try {
-          let venta = await Venta.findById({_id:id}).populate('direccion').populate('cliente');
-          let detalles = await Dventa.find({venta:id}).populate('producto')
-          res.status(200).send({data:venta,detalles:detalles});
-      } catch (error) {
-        res.status(200).send({data:undefined});
-      }
-    
+    try {
+      let venta = await Venta.findById({ _id: id })
+        .populate("direccion")
+        .populate("cliente");
+      let detalles = await Dventa.find({ venta: id }).populate("producto");
+      res.status(200).send({ data: venta, detalles: detalles });
+    } catch (error) {
+      res.status(200).send({ data: undefined });
+    }
   } else {
     res.status(500).send({ message: "NoAccess" });
   }
 };
 
-
 //DIRECIONES ************
 const registro_direccion_cliente = async function (req, res) {
   if (req.user) {
-      let data = req.body
+    let data = req.body;
 
-      if (data.principal) {
-        let direcciones = await Direccion.find({cliente:data.cliente})
+    if (data.principal) {
+      let direcciones = await Direccion.find({ cliente: data.cliente });
 
-        direcciones.forEach(async element=>{
-          await Direccion.findByIdAndUpdate({_id:element._id},{principal:false})
-        })
-      }
-      
+      direcciones.forEach(async (element) => {
+        await Direccion.findByIdAndUpdate(
+          { _id: element._id },
+          { principal: false }
+        );
+      });
+    }
 
-      let reg = await Direccion.create(data);
-      res.status(200).send({ data: reg });
-    
+    let reg = await Direccion.create(data);
+    res.status(200).send({ data: reg });
   } else {
     res.status(500).send({ message: "NoAccess" });
   }
@@ -281,12 +278,11 @@ const registro_direccion_cliente = async function (req, res) {
 
 const listar_direcciones_cliente = async function (req, res) {
   if (req.user) {
-      let id = req.params['id']
+    let id = req.params["id"];
 
-      let direcciones = await Direccion.find({cliente:id}).populate('cliente')
+    let direcciones = await Direccion.find({ cliente: id }).populate("cliente");
 
-      res.status(200).send({ data: direcciones });
-    
+    res.status(200).send({ data: direcciones });
   } else {
     res.status(500).send({ message: "NoAccess" });
   }
@@ -294,19 +290,21 @@ const listar_direcciones_cliente = async function (req, res) {
 
 const cambiar_direccion_cliente = async function (req, res) {
   if (req.user) {
-      let id = req.params['id']
-      let cliente = req.params['cliente']
+    let id = req.params["id"];
+    let cliente = req.params["cliente"];
 
-      let direcciones = await Direccion.find({cliente:cliente})
+    let direcciones = await Direccion.find({ cliente: cliente });
 
-      direcciones.forEach(async element=>{
-        await Direccion.findByIdAndUpdate({_id:element._id},{principal:false})
-      })
-      
-      await Direccion.findByIdAndUpdate({_id:id},{principal:true})
+    direcciones.forEach(async (element) => {
+      await Direccion.findByIdAndUpdate(
+        { _id: element._id },
+        { principal: false }
+      );
+    });
 
-      res.status(200).send({ data: true });
-    
+    await Direccion.findByIdAndUpdate({ _id: id }, { principal: true });
+
+    res.status(200).send({ data: true });
   } else {
     res.status(500).send({ message: "NoAccess" });
   }
@@ -314,38 +312,31 @@ const cambiar_direccion_cliente = async function (req, res) {
 
 const obtener_direccion_principal_cliente = async function (req, res) {
   if (req.user) {
-      let id = req.params["id"]
-      let direccion_u = undefined
+    let id = req.params["id"];
+    let direccion_u = undefined;
 
-        let direccion = await Direccion.findOne({cliente:id,principal:true})
+    let direccion = await Direccion.findOne({ cliente: id, principal: true });
 
-        if (direccion == undefined) {
-          res.status(200).send({ data: undefined });
-        }else{
-          res.status(200).send({ data: direccion });
-        }
-
-     
-    
+    if (direccion == undefined) {
+      res.status(200).send({ data: undefined });
+    } else {
+      res.status(200).send({ data: direccion });
+    }
   } else {
     res.status(500).send({ message: "NoAccess" });
   }
 };
 
-
-
 //CONTACTO *************
 const enviar_mensaje_contacto = async function (req, res) {
-    let data = req.body;
+  let data = req.body;
 
-    let reg = await Contacto.create(data)
+  let reg = await Contacto.create(data);
 
-    res.status(200).send({ data: reg});
+  res.status(200).send({ data: reg });
 };
 
-
-
-module.exports = { 
+module.exports = {
   registro_cliente,
   login_cliente,
   listar_clientes_filtro_admin,
