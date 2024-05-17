@@ -3,7 +3,7 @@ const Wishlist = require("../models/wishlist");
 var Producto = require("../models/producto.js");
 
 const agregar_carrito_cliente = async function (req, res) {
-  if (req.user) {
+  //if (req.user) {
     let data = req.body;
 
     try {
@@ -30,9 +30,10 @@ const agregar_carrito_cliente = async function (req, res) {
       console.error('Error al agregar producto al carrito:', error);
       res.status(500).send({ message: 'Error interno del servidor' });
     }
-  } else {
-    res.status(500).send({ message: 'NoAccess' });
-  }
+  // }
+  //  else {
+  //   res.status(500).send({ message: 'NoAccess' });
+  // }
 };
 
 

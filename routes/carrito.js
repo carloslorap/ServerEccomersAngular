@@ -7,7 +7,7 @@ api.post('/agregar_carrito_cliente',CarritoController.agregar_carrito_cliente)
 api.get('/obtener_carrito_cliente/:id',auth.auth,CarritoController.obtener_carrito_cliente)
 api.delete('/eliminar_carrito_cliente/:id',auth.auth,CarritoController.eliminar_carrito_cliente)
 
-module.exports = api
+module.exports = api 
 
 
 
